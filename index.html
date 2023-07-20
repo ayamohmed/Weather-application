@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>weather app</title>
+    <link rel="stylesheet" href="style .css">
+    </head>
+    <body>
+        <div class="card">
+            <div class="search">
+                <input type="text" placeholder="Enter City Name" spellcheck="false"/>
+                <button><img src="images/search.png" /></button>
+            </div>
+  <div class="error">
+      <p>Invalid city name</p>
+  </div>          
+            
+    <div class="weather">
+    <img class="weather-icon" src="images/rain.png" />
+    <h1 class="temp">22°C</h1>
+    <h2 class="city">New York</h2>
+    
+    <div class="details">
+        
+        <div class="col">
+    <img src="images/humidity.png" />
+    <div>
+        <p class="humidity">50%</p>
+        <p>Humidity </p>
+    </div>
+        </div>
+        <div class="col">
+    <img src="images/wind.png" />
+    <div>
+        <p class="wind">15km/hr</p>
+        <p>Wind </p>
+    </div>
+        </div>
+            </div>
+           </div>
+        </div>
+        
+        <script>
+            // Define constants for the OpenWeatherMap API key and URL
+            const apiKey="cc250df3b3011dc6be865a9eb3a28018";
+            const apiUrl="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+            const searchBox= document.querySelector(".search input");
+            const searchBtn= document.querySelector(".search button");
+            const weatherIcon= document.querySelector(".weather-icon");
+            
+
+
+            // Define the `checkWeather` function
+            async function checkWeather(city){
+                  // Make an API call to the OpenWeatherMap API using the fetch() function
+                const response = await fetch(apiUrl +city +`&appid=${apiKey}`);
+
+                if(response.status==404){
+         document.querySelector(".error").style.display="block";
+         document.querySelector(".weather").style.display="none";
+                }else{
+
+                // Parse the response JSON data using the json() method
+                var data = await response.json();
+
+   // If there was no error, display the weather data and update the HTML elements
+        document.querySelector(".city").innerHTML=data.name;
+        document.querySelector(".temp").innerHTML=Math.round(data.main.temp )+ "°C";
+        document.querySelector(".humidity").innerHTML=data.main.humidity + "%";
+        document.querySelector(".wind").innerHTML=data.wind.speed + "km/hr";
+    // Update the weather icon based on the weather condition
+    if (data.weather[0].main=="Clouds"){
+            weatherIcon.src="images/clouds.png"
+        }else if (data.weather[0].main=="Clear"){
+            weatherIcon.src="images/clear.png"
+        }else if (data.weather[0].main=="Rain"){
+            weatherIcon.src="images/rain.png"
+        }else if (data.weather[0].main=="Drizzle"){
+            weatherIcon.src="images/drizzle.png"
+        }else if (data.weather[0].main=="Mist"){
+            weatherIcon.src="images/mist.png"
+        }
+        document.querySelector(".weather").style.display="block";
+        document.querySelector(".error").style.display="none";
+
+                }
+            }
+
+
+// we are using an arrow function (() => {}) to define a callback function inline, event linstener is the event which is 
+//click,This will trigger a fetch request to the OpenWeatherMap API to retrieve weather data for the specified city.
+            searchBtn.addEventListener("click",  ()=>{
+            checkWeather(searchBox.value);
+        })
+       
+        </script>
+    </body>
+</html>
